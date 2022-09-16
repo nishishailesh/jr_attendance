@@ -247,7 +247,7 @@ function display_sql_result_data($result,$show_hide='yes')
 		echo '<div>';	
 	}
 	
-       echo '<table border=1 class="table-striped table-hover">';
+       echo '<table border=1 width=100% class="table-striped table-hover">';
 					
 			$first_data='yes';
 

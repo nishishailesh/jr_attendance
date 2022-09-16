@@ -41,6 +41,16 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 //////////////user code ends////////////////
 echo '</div>';	//for div after main menu
 
+
+echo '
+<div class=print_hide>
+<h5 class="bg-warning  print_hide" data-toggle="collapse" data-target="#help" >Printing Help</h5>
+<ul id="help" class="show  print_hide">
+	<li>Go to Internet Browser print menu (Ctrl+P)</li>
+	<li>Select <b>Landscape</b> orientaion</li>
+	<li>select <b>Fit to page width</b></li>
+</ul></div>';
+
 tail();
 
 //echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
@@ -96,7 +106,7 @@ echo ' <table width=100% border=1>
 	           <td  width="15% " align=center><img src="./img/college_logo.jpg" alt="college logo"></td>
 	         </tr>
 	      </table>';
-echo '<h3 class="text-success" align=center>Junior Resident attendance, Month: '.$_POST['month'].' Year:'.$_POST['year'].'</h3>';
+echo '<h3 class="text-success" align=center>Resident attendance, Month: '.$_POST['month'].' Year:'.$_POST['year'].'</h3>';
 	      
 		view_sql_result_as_table($link,$sql,$show_hide='no');
 		echo '</div>';

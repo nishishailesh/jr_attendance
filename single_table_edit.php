@@ -11,7 +11,7 @@ $user=get_user_info($link,$_SESSION['login']);
 //$auth=explode(',',$user['authorization']);
 //print_r($user);
 
-echo '<h3 class="text-success">Junior Resident attendance</h3>';
+echo '<h3 class="text-success">Resident attendance</h3>';
 echo '<div class="d-inline-block bg-light p-3 border" >
 		<form method=post class=print_hide>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
@@ -87,7 +87,7 @@ if($_POST['action']=='save')
 	}
 }
 
-
+/*
 $sql='
 		select
 			id,
@@ -107,7 +107,28 @@ $sql='
 			datediff(date_add(date_add(date_of_joining,INTERVAL 3 YEAR), Interval -1 day),current_date() ) >-65
 		order by 
 			remaining_days desc';
-			
+*/
+
+$sql='
+		select
+			id,
+			name ,
+			department,
+			aadhar,
+			current_date() as today,
+			date_of_joining,
+			date_add(date_add(date_of_joining,INTERVAL `duration` YEAR), Interval -1 day) as last_day,
+			duration
+
+		from 
+			resident 
+		where 
+			department=\''.$user['department'].'\'
+			and
+			datediff(date_add(date_add(date_of_joining,INTERVAL 3 YEAR), Interval -1 day),current_date() ) >-65
+		order by 
+			duration desc, date_of_joining';
+						
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 
@@ -122,11 +143,11 @@ if(isset($_POST['month']))
 		$result=run_query($link,$GLOBALS['database'],$sql);
 		take_resident_attendance($link,$result,isset($_POST['resident_id'])?$_POST['resident_id']:'',$_POST['month'],$_POST['year']);
 		
-		echo '<form method=post action=print.php>
+		echo '<form method=post action=print.php target=_blank>
 				<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 				<input type=hidden name=month value=\''.$_POST['month'].'\'>
 				<input type=hidden name=year value=\''.$_POST['year'].'\'>
-				<button class="btn btn-outline-primary btn-sm" name=action value=print target=_blank>Print</button>
+				<button class="btn btn-outline-primary btn-sm" name=action value=print >Print</button>
 		</form>';
 		print_attendence($link,$user['department'],$_POST['month'],$_POST['year']);
 	}
@@ -167,9 +188,9 @@ function print_attendence($link,$dept,$month,$year)
 				and
 				final_submit=1
 				';
-		echo $sql;
+		//echo $sql;
 		echo '<div id=print_area>';
-		view_sql_result_as_table($link,$sql,$show_hide='yes');
+		view_sql_result_as_table($link,$sql,$show_hide='no');
 		echo '</div>';
 }
 
@@ -200,7 +221,7 @@ function take_resident_attendance($link,$result,$resident_id,$month,$year)
                  <td>Today</td>
                  <td>Date_of_Joining</td>
                  <td>Last_day</td>
-                 <td>Days remaining<br>As on today</td>
+                 <td>JR=3/SR=1</td>
                  <td>Month</td>
                  <td>Year</td>
                  <td>Present</td>
@@ -213,13 +234,12 @@ function take_resident_attendance($link,$result,$resident_id,$month,$year)
                  <td>Action</td>
                  <td>Action</td>
                  </tr>';
-				 					
+
 			$first_data='yes';
 
 			while($array=get_single_row($result))
 			{
 				//print_r($array);
-
 				$edit_sql='select * from attendance where resident_id=\''.$array['id'].'\' and month=\''.$month.'\' and year=\''.$year.'\'';
 				//echo $edit_sql;
 				$edit_result=run_query($link,$GLOBALS['database'],$edit_sql);
